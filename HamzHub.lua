@@ -33,6 +33,7 @@ end))
 
 -- === FLAGS ===
 getgenv().Blati = false
+getgenv().ForceSecret = false
 getgenv().InfiniteJump = false
 getgenv().Noclip = false
 getgenv().WalkSpeedValue = 16
@@ -113,6 +114,51 @@ MainTab:CreateToggle({
 game:GetService("ReplicatedStorage"):WaitForChild("FishUI"):WaitForChild("ToServer"):WaitForChild("ToggleFavorite"):FireServer(unpack(args))
         else
             if blatiLoop then task.cancel(blatiLoop) blatiLoop = nil end
+        end
+    end,
+})
+
+-- === FORCE SECRET (Instant Fishing Secret) ===
+local forceSecretLoop
+local function startForceSecret()
+    if forceSecretLoop then return end
+    forceSecretLoop = task.spawn(function()
+        while getgenv().ForceSecret do
+            if sessionID and humanoid then
+                throwRemote:FireServer(0, sessionID)
+                task.wait(0.00001)
+                minigameStarted:FireServer(sessionID)
+                task.wait(0.00001)
+                local successArgs = {
+                    ["duration"] = math.random(7.5, 12.5),
+                    ["result"] = "SUCCESS",
+                    ["insideRatio"] = 0.8 + (math.random(3, 18) / 100),
+                    ["catchType"] = "SECRET",
+                    ["isSecret"] = true
+                }
+                reelFinished:FireServer(successArgs, sessionID)
+                task.wait(0.00001)
+            else
+                task.wait(0.00001)
+            end
+        end
+    end)
+end
+
+MainTab:CreateToggle({
+    Name = "FORCE SECRET (Instant Fishing Secret)",
+    CurrentValue = false,
+    Flag = "ForceSecretFlag",
+    Callback = function(Value)
+        getgenv().ForceSecret = Value
+        if Value then
+            startForceSecret()
+            local args = {
+	"bd4238ec-6bbc-4523-8c63-a17356e1f130"
+}
+game:GetService("ReplicatedStorage"):WaitForChild("FishUI"):WaitForChild("ToServer"):WaitForChild("ToggleFavorite"):FireServer(unpack(args))
+        else
+            if forceSecretLoop then task.cancel(forceSecretLoop) forceSecretLoop = nil end
         end
     end,
 })
