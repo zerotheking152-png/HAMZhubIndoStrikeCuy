@@ -83,15 +83,17 @@ local function startBlati()
                 task.wait(0.00001)
                 minigameStarted:FireServer(sessionID)
                 task.wait(0.00001)
-                local successArgs = {
-                    ["duration"] = math.random(7.5, 12.5),
-                    ["result"] = "SUCCESS",
-                    ["insideRatio"] = 0.8 + (math.random(3, 18) / 100),
-                    ["catchType"] = "SECRET",
-                    ["isSecret"] = true
-                }
-                reelFinished:FireServer(successArgs, sessionID)
-                task.wait(0.00001)
+                for i = 1, 10 do
+                    local successArgs = {
+                        ["duration"] = math.random(7.5, 12.5),
+                        ["result"] = "SUCCESS",
+                        ["insideRatio"] = 0.8 + (math.random(3, 18) / 100),
+                        ["catchType"] = "SECRET",
+                        ["isSecret"] = true
+                    }
+                    reelFinished:FireServer(successArgs, sessionID)
+                    task.wait(0.00001)
+                end
             else
                 task.wait(0.00001)
             end
