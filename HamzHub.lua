@@ -83,17 +83,15 @@ local function startBlati()
                 task.wait(0.00001)
                 minigameStarted:FireServer(sessionID)
                 task.wait(0.00001)
-                for i = 1, 10 do
-                    local successArgs = {
-                        ["duration"] = math.random(7.5, 12.5),
-                        ["result"] = "SUCCESS",
-                        ["insideRatio"] = 0.8 + (math.random(3, 18) / 100),
-                        ["catchType"] = "SECRET",
-                        ["isSecret"] = true
-                    }
-                    reelFinished:FireServer(successArgs, sessionID)
-                    task.wait(0.00001)
-                end
+                local successArgs = {
+                    ["duration"] = math.random(7.5, 12.5),
+                    ["result"] = "SUCCESS",
+                    ["insideRatio"] = 0.8 + (math.random(3, 18) / 100),
+                    ["catchType"] = "SECRET",
+                    ["isSecret"] = true
+                }
+                reelFinished:FireServer(successArgs, sessionID)
+                task.wait(0.00001)
             else
                 task.wait(0.00001)
             end
@@ -228,55 +226,86 @@ PlayerTab:CreateToggle({
     end,
 })
 
--- === TELEPORT SECTION (baru ditambahin, gak ubah apa-apa yang lama) ===
-local teleportSection = PlayerTab:CreateSection("TELEPORT PULAU")
+-- === TELEPORT MENU SENDIRI (tab baru, bukan di player) ===
+local TeleportTab = Window:CreateTab("TELEPORT", 4483362458)
+local teleportSection = TeleportTab:CreateSection("TELEPORT PULAU")
 
-PlayerTab:CreateButton({
+TeleportTab:CreateButton({
     Name = "Pulau Kinyis",
     Callback = function()
         local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
         if hrp then
             hrp.CFrame = CFrame.new(81.8612061, 1006.87341, -818.234985, 0.485841095, -3.1988499e-08, -0.87404716, 9.73005925e-08, 1, 1.74866148e-08, 0.87404716, -9.35410185e-08, 0.485841095)
+            sessionID = nil
+            task.wait(0.5)
+            local backpackTool = player.Backpack:FindFirstChildOfClass("Tool")
+            if backpackTool then
+                backpackTool.Parent = player.Character
+            end
         end
     end,
 })
 
-PlayerTab:CreateButton({
+TeleportTab:CreateButton({
     Name = "Pulau Raja Ampat",
     Callback = function()
         local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
         if hrp then
             hrp.CFrame = CFrame.new(-1845.45935, 1006.62732, -1579.06555, 0.925677121, -1.99983274e-09, 0.378314495, 9.79888726e-10, 1, 2.88852808e-09, -0.378314495, -2.30313835e-09, 0.925677121)
+            sessionID = nil
+            task.wait(0.5)
+            local backpackTool = player.Backpack:FindFirstChildOfClass("Tool")
+            if backpackTool then
+                backpackTool.Parent = player.Character
+            end
         end
     end,
 })
 
-PlayerTab:CreateButton({
+TeleportTab:CreateButton({
     Name = "Pulau Wakatobi",
     Callback = function()
         local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
         if hrp then
             hrp.CFrame = CFrame.new(-1399.88684, 1021.17017, 1497.85059, -0.327202201, -4.10665884e-08, 0.944954336, 7.90609747e-08, 1, 7.08346519e-08, -0.944954336, 9.78862644e-08, -0.327202201)
+            sessionID = nil
+            task.wait(0.5)
+            local backpackTool = player.Backpack:FindFirstChildOfClass("Tool")
+            if backpackTool then
+                backpackTool.Parent = player.Character
+            end
         end
     end,
 })
 
-PlayerTab:CreateButton({
+TeleportTab:CreateButton({
     Name = "Pulau Bali",
     Callback = function()
         local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
         if hrp then
             hrp.CFrame = CFrame.new(989.347717, 1034.922, 1607.38538, 0.00405485556, 4.51565931e-08, 0.999991775, -1.46329642e-08, 1, -4.50976287e-08, -0.999991775, -1.4449979e-08, 0.00405485556)
+            sessionID = nil
+            task.wait(0.5)
+            local backpackTool = player.Backpack:FindFirstChildOfClass("Tool")
+            if backpackTool then
+                backpackTool.Parent = player.Character
+            end
         end
     end,
 })
 
-PlayerTab:CreateButton({
+TeleportTab:CreateButton({
     Name = "Pulau natuna",
     Callback = function()
         local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
         if hrp then
             hrp.CFrame = CFrame.new(2240.65332, 995.997681, -94.5214081, 0.267383486, 2.81976913e-08, -0.963590205, 1.64388858e-08, 1, 3.38247297e-08, 0.963590205, -2.48845229e-08, 0.267383486)
+            sessionID = nil
+            task.wait(0.5)
+            local backpackTool = player.Backpack:FindFirstChildOfClass("Tool")
+            if backpackTool then
+                backpackTool.Parent = player.Character
+            end
         end
     end,
 })
@@ -295,6 +324,22 @@ Players.LocalPlayer.Idled:Connect(function()
     VirtualUser:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
     task.wait(1)
     VirtualUser:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+end)
+
+-- === ROD EQUIP FIX (biar rod tetep kepake setelah AFK lama) ===
+local rodEquipLoop = task.spawn(function()
+    while true do
+        if getgenv().Blati and player.Character then
+            local toolInHand = player.Character:FindFirstChildOfClass("Tool")
+            if not toolInHand then
+                local backpackTool = player.Backpack:FindFirstChildOfClass("Tool")
+                if backpackTool then
+                    backpackTool.Parent = player.Character
+                end
+            end
+        end
+        task.wait(10)
+    end
 end)
 
 print("🎉 HAMZHUB GUI KEREN udah muncul bro! Tab MAIN & PLAYER siap. Cast manual 1x dulu biar Blati nyala. Gas polll 🔥")
